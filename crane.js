@@ -32,7 +32,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 (function(window, document){
 	var _Crane = function(){},
-		event_guid = 1;
+		event_guid = 1,
+		selector_engine = window.Sizzle || ess;
 	
 	window.crane = function( selector ) {
 		var new_crane = new _Crane();
@@ -119,7 +120,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 		if ( typeof selector == 'string' ) {
 			//cache disabled
-			elements = ess(selector);
+			elements = selector_engine(selector);
 		}
 		else if ( selector instanceof Array ) {
 			for (i=0,l=selector.length; i<l; i++) {
@@ -167,7 +168,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 			j,jlen;
 		
 		for ( i=0,l=this.length; i<l; i++ ) {
-			var list = ess( selector, this[i] );
+			var list = selector_engine( selector, this[i] );
 			
 			if (typeof list != 'undefined') {
 				for (j=0, jlen = list.length; j<jlen; j++) {
