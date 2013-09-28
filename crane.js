@@ -184,6 +184,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 		return window.crane( j >= 0 && j < len ? this[j] : null );
 	}
 	
+	_Crane.prototype.sort = [].sort;
+	
+	_Crane.prototype.splice = [].splice;
+	
 	_Crane.prototype.push = function( ) {
 		var i,l,
 			this_length = this.length;
