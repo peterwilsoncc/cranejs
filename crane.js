@@ -220,6 +220,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 		return window.crane(found);
 		
 	}
+
+	//each
+
+	//css - read only, inline styles are bad
 	
 	_Crane.prototype.addClass = function( name ){
 		var i,l,
@@ -455,5 +459,15 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 			return this;
 		}
 	}
+
+	//append
+	
+	//remove
+	
+	//prepend
+	
+	//html
+	
+	//text
 	
 }(this, document));
