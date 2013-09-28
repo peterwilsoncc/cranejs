@@ -33,7 +33,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 (function(window, document){
 	var _Crane = function(){},
 		event_guid = 1,
-		selector_engine = window.Sizzle || ess;
+		selector_engine = window.Sizzle || ess,
+		
+		rquickExpr = /^(?:\s*(<[\w\W]+>)[^>]*|#([\w-]*))$/;
 	
 	window.crane = function( selector ) {
 		var new_crane = new _Crane();
@@ -115,36 +117,49 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 	
 	_Crane.prototype.init = function( selector ) {
 		var elements = [],
+			match,
 			i,l;
-
-
-		if ( typeof selector == 'string' ) {
-			//cache disabled
-			elements = selector_engine(selector);
+		
+		this.length = 0;
+		if ( ! selector ) {
+			return this;
 		}
-		else if ( selector instanceof Array ) {
-			for (i=0,l=selector.length; i<l; i++) {
-				if ( selector[i].nodeType ) {
-					elements.push( selector[i] );
-				}
+		
+		if ( typeof selector === "string" ) {
+			//ensure it's not HTML
+			if ( selector.charAt(0) === "<" && selector.charAt( selector.length - 1 ) === ">" && selector.length >= 3 ) {
+				match = [ null, selector, null ];
+			}
+			else {
+				match = rquickExpr.exec( selector );
+			}
+			
+			if ( match ) {
+				return this;
+			}
+			else {
+				elements = selector_engine( selector );
 			}
 		}
-		else if ( selector.nodeType ) {
+		
+		else if ( selector.nodeType || selector.window ) {
 			elements = [selector];
 		}
+		
+		else if ( typeof selector === 'function' ) {
+			//document.ready
+			return init( document ).addEvent( 'ready', selector );
+		}
+		
 		else {
 			elements = [];
 		}
-
-
-
+		
 		for ( i=0,l=elements.length; i<l; i++ ) {
 			this[i] = elements[i];
 		}
-		this.length = l;
 		
-		this.sort = [].sort;
-		this.splice = [].splice;
+		this.length = l;
 		return this;
 	}
 	
