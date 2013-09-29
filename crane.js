@@ -145,6 +145,14 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 		else if ( selector.nodeType || selector.window ) {
 			elements = [selector];
 		}
+
+		else if ( selector instanceof Array ) {
+			for (i=0,l=selector.length; i<l; i++) {
+				if ( selector[i].nodeType || selector[i].window ) {
+					elements.push( selector[i] );
+				}
+			}
+		}
 		
 		else if ( typeof selector === 'function' ) {
 			//document.ready
