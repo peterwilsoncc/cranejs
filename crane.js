@@ -114,7 +114,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 		}
 		return elements;
 	}
-	
+
 	_Crane.prototype.init = function( selector ) {
 		var elements = [],
 			match,
@@ -460,8 +460,86 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 		}
 	}
 
-	//append
-	
+	_Crane.prototype.append = function ( element ) {
+		var match,
+			i,j,el_len,
+			l = this.length,
+			no_clone = l - 1,
+			node;
+		
+		if ( typeof element === 'string' ) {
+			//ensure it's not HTML
+			if ( element.charAt(0) === "<" && element.charAt( element.length - 1 ) === ">" && element.length >= 3 ) {
+				match = [ null, element, null ];
+			}
+			else {
+				match = rquickExpr.exec( element );
+			}
+			
+			if ( match ) {
+				//this isn't jQuery
+				return this;
+			}
+			
+			element = clean_whitespace( element );
+			
+			if ( element.indexOf( ' ' ) >= 0 ) {
+				//ignore, contains white space
+				return this;
+			}
+			
+			// just make the element and put it in an array
+			element = [document.createElement( element )];
+		}
+		
+		else if ( element instanceof Element ) {
+			//put the element in an array
+			element = [element];
+		}
+		
+		if ( typeof element === 'object' ) {
+			// cleck element is an array like object
+			if (!(
+			( element instanceof _Crane ) ||
+			( ( typeof HTMLCollection != 'undefined' ) && element instanceof HTMLCollection ) ||
+			( ( typeof NodeList != 'undefined' ) && element instanceof NodeList ) ||
+			( element instanceof Array )
+			)) {
+				// I can't deal with this
+				return this;
+			}
+		}
+		
+		
+			
+		el_len = element.length;
+		for ( i=0 ; i < l; i++ ) {
+
+			for (j=0; j < el_len; j++ ) {
+				if (!( element[j].nodeType && element[j].nodeType === 1 )) {
+					continue;
+				}
+			
+				if ( i !== no_clone ) {
+					node = element[j].cloneNode(true);
+				}
+				else {
+					node = element[j];
+				}
+			
+				if ( this[i].nodeType === 1 || this[i].nodeType === 11 || this[i].nodeType === 9 ) {
+					this[i].appendChild( node );
+				}
+			
+			}
+			
+		}
+			
+		
+		
+		return this;
+	}
+
 	//remove
 	
 	//prepend
