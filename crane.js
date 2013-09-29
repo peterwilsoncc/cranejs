@@ -202,6 +202,13 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 		return false;
 	}
 
+	function fcamelCase ( all, letter ) {
+		return letter.toUpperCase();
+	}
+
+	function camelCase( string ) {
+		return string.replace( rmsPrefix, "ms-" ).replace( rdashAlpha, fcamelCase );
+	}
 
 	_Crane.prototype.init = function( selector ) {
 		var elements = [],
@@ -374,6 +381,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 		
 		return this;
 	}
+
+	//toggleClass
 	
 	_Crane.prototype.hasClass = function( name ){
 		var i,l,
@@ -506,7 +515,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 	_Crane.prototype.data = function ( name, value ) {
 		function _setData( element, name, value ) {
-			element['_' + name] = value;
+			element['$$craneJS$$_' + name] = value;
 		}
 		
 		function _checkAttr( element, name ) {
@@ -526,7 +535,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 				} catch( e ) {}
 
 				// Make sure we set the data so it isn't changed later
-				_setData( element, name, data );
+				_setData( element, camelCase(name), data );
 
 			} else {
 				data = undefined;
@@ -540,7 +549,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 				return undefined;
 			}
 			//get value from the first element
-			value = this[0]['_' + name];
+			value = this[0]['$$craneJS$$_' + camelCase(name)];
 			if ( !value ) {
 				value = _checkAttr( this[0], name );
 			}
@@ -550,7 +559,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 			//set value on all elements
 			var i,l;
 			for (i=0, l=this.length; i<l; i++ ) {
-				_setData( this[i], name, value );
+				_setData( this[i], camelCase(name), value );
 			}
 			return this;
 		}
