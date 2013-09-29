@@ -35,7 +35,14 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 		event_guid = 1,
 		selector_engine = window.Sizzle || ess,
 		
-		rquickExpr = /^(?:\s*(<[\w\W]+>)[^>]*|#([\w-]*))$/;
+		rquickExpr = /^(?:\s*(<[\w\W]+>)[^>]*|#([\w-]*))$/,
+		rbrace = /(?:\{[\s\S]*\}|\[[\s\S]*\])$/,
+		rvalidchars = /^[\],:{}\s]*$/,
+		rvalidbraces = /(?:^|:|,)(?:\s*\[)+/g,
+		rvalidescape = /\\(?:["\\\/bfnrt]|u[\da-fA-F]{4})/g,
+		rvalidtokens = /"[^"\\\r\n]*"|true|false|null|-?(?:\d+\.|)\d+(?:[eE][+-]?\d+|)/g,
+		rmsPrefix = /^-ms-/,
+		rdashAlpha = /-([\da-z])/gi;
 	
 	window.crane = function( selector ) {
 		var new_crane = new _Crane();
@@ -164,6 +171,36 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 		return element;
 	}
 
+	function parseJSON( data ) {
+		// shamelessly ripped from jQuery
+		// Attempt to parse using the native JSON parser first
+		if ( window.JSON && window.JSON.parse ) {
+			return window.JSON.parse( data );
+		}
+
+		if ( data === null ) {
+			return data;
+		}
+
+		if ( typeof data === "string" ) {
+
+			// Make sure leading/trailing whitespace is removed (IE can't handle it)
+			data = data.replace(/^\s+|\s+$/g,'');
+
+			if ( data ) {
+				// Make sure the incoming data is actual JSON
+				// Logic borrowed from http://json.org/json2.js
+				if ( rvalidchars.test( data.replace( rvalidescape, "@" )
+					.replace( rvalidtokens, "]" )
+					.replace( rvalidbraces, "")) ) {
+
+					return ( new Function( "return " + data ) )();
+				}
+			}
+		}
+
+		return false;
+	}
 
 
 	_Crane.prototype.init = function( selector ) {
@@ -484,8 +521,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 					data === "null" ? null :
 					// Only convert to a number if it doesn't change the string
 					+data + "" === data ? +data :
-					// rbrace.test( data ) ? jQuery.parseJSON( data ) :
-						data;
+					rbrace.test( data ) ? parseJSON( data ) :
+					data;
 				} catch( e ) {}
 
 				// Make sure we set the data so it isn't changed later
