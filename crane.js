@@ -540,7 +540,22 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 		return this;
 	}
 
-	//remove
+	_Crane.prototype.remove = function() {
+		var len,
+			i,
+			retained = [];
+		
+		for (len = this.length,i=len-1; i>=0; i--) {
+			if ( this[i].parentNode ) {
+				this[i].parentNode.removeChild( this[i] );
+			}
+			else {
+				retained.push( this[i] );
+			}
+		}
+
+		return window.crane(retained);
+	}
 	
 	//prepend
 	
