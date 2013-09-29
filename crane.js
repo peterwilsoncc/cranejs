@@ -576,7 +576,45 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 		return window.crane(retained);
 	}
 	
-	//prepend
+	_Crane.prototype.prepend = function( element ) {
+		var i,j,el_len,
+			l = this.length,
+			no_clone = l - 1,
+			node;
+		
+		
+		element = manip_elements ( element );
+		if ( element === false ) {
+			return this;
+		}
+			
+		el_len = element.length;
+		for ( i=0 ; i < l; i++ ) {
+
+			for (j=0; j < el_len; j++ ) {
+				if (!( element[j].nodeType && element[j].nodeType === 1 )) {
+					continue;
+				}
+			
+				if ( i !== no_clone ) {
+					node = element[j].cloneNode(true);
+				}
+				else {
+					node = element[j];
+				}
+			
+				if ( this[i].nodeType === 1 || this[i].nodeType === 11 || this[i].nodeType === 9 ) {
+					this[i].insertBefore( node, this[i].firstChild );
+				}
+			
+			}
+			
+		}
+			
+		
+		
+		return this;
+	}
 	
 	//html
 	
