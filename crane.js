@@ -238,7 +238,7 @@ http://jquery.org/license
 				match = rquickExpr.exec( selector );
 			}
 			
-			if ( match ) {
+			if ( match && (match[1]) ) {
 				return this;
 			}
 			else {
