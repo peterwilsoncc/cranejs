@@ -554,7 +554,7 @@ http://jquery.org/license
 		}
 		
 		if ( typeof value == 'undefined' ) {
-			if ( this.length == 0 ) {
+			if ( ( !name ) || ( this.length == 0 ) ) {
 				return undefined;
 			}
 			//get value from the first element
